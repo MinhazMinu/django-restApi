@@ -58,3 +58,60 @@ python manage.py runserver
 ```sh
 python manage.py createsuperuser
 ```
+
+###### Create model
+
+-   create models.py file
+
+```py
+from django.db import models
+
+
+class Drink(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+```
+
+###### make migration
+
+-   Add drinks to installed app list in settings.py
+
+```py
+INSTALLED_APPS = [
+    "drinks",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+```
+
+-   run makemigrations command
+
+```sh
+python manage.py makemigrations drinks
+```
+
+###### Apply migration
+
+```py
+python manage.py migrate
+```
+
+###### Register drink model to show in admin panel
+
+-   Create admin.py
+
+```py
+from django.contrib import admin
+from .models import Drink
+
+admin.site.register(Drink)
+``
+restart the server
+```
