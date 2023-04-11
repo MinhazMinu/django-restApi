@@ -350,6 +350,24 @@ def drink_request(request, format=None):
 def drink_detail(request, id, format=None):
         .......
         .......
-
-
 ```
+
+###### now lets consume API
+
+-   create a consume.py file in main directory
+-   install requests module
+
+```sh
+pip install requests
+```
+
+-   In consume.py file
+
+```py
+import requests
+
+response = requests.get("http://127.0.0.1:8000/drinks")
+print(response.json())
+```
+
+If we run this file, in console we will find all the list
