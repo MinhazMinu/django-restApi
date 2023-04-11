@@ -270,3 +270,86 @@ def drink_request(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 ```
+
+###### GET Single drink, Update Single drink, Delete single drink
+
+-   in views.py file we can add
+
+```py
+from .serializers import DrinkSerializer
+from .models import Drink
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+
+@api_view(["GET", "POST"])
+def drink_request(request):
+    if request.method == "GET":
+        # ge all the drinks
+        drinks = Drink.objects.all()
+        # serialize them
+        serializer = DrinkSerializer(drinks, many=True)
+        # return the serialized data
+        return Response(serializer.data)
+    if request.method == "POST":
+        serializer = DrinkSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def drink_detail(request, id):
+    if request.method == "GET":
+        try:
+            drink = Drink.objects.get(id=id)
+        except Drink.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = DrinkSerializer(drink)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        drink = Drink.objects.get(id=id)
+        serializer = DrinkSerializer(drink, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    elif request.method == "DELETE":
+        drink = Drink.objects.get(id=id)
+        drink.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+```
+
+we can use postman to check this api endpoint.
+
+-   To add json functionality to browser we can add in urls.py
+
+```py
+from django.contrib import admin
+from django.urls import path
+from drinks import views
+from rest_framework.urlpatterns import format_suffix_patterns
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("drinks/", views.drink_request),
+    path("drinks/<int:id>", views.drink_detail),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
+```
+
+and views.py file we need to add _format=None_
+
+```py
+def drink_request(request, format=None):
+        .......
+        .......
+
+def drink_detail(request, id, format=None):
+        .......
+        .......
+
+
+```

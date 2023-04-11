@@ -6,7 +6,7 @@ from rest_framework import status
 
 
 @api_view(["GET", "POST"])
-def drink_request(request):
+def drink_request(request, format=None):
     if request.method == "GET":
         # ge all the drinks
         drinks = Drink.objects.all()
@@ -22,7 +22,7 @@ def drink_request(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
-def drink_detail(request, id):
+def drink_detail(request, id, format=None):
     if request.method == "GET":
         try:
             drink = Drink.objects.get(id=id)
